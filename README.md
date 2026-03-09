@@ -21,7 +21,7 @@ Per gestire una flotta di schede con firmware differenti senza duplicare il codi
 
 ---
 
-## 🚀 Guida all'Installazione (Setup Rapido)
+## 🚀 Guida all'Installazione
 
 Dato che il progetto usa una struttura avanzata a multi-ambiente, **non** basta aprire semplicemente la cartella principale. Segui questi passaggi per configurare l'IDE correttamente.
 
@@ -73,12 +73,12 @@ Progetto base utile testare l'attivazione del modulo radio e l'esposizione di un
 
 > Il codice è stato preso dalla documentazione ufficiale Arduino seguendo [questo articolo](https://docs.arduino.cc/tutorials/portenta-h7/ble-connectivity/)
 
-### 3. 🛜 Connessione BLE V1 (Bidirezionale)
+### 3. 🛜 Connessione BLE Bidirezionale (`Progetti/Connessione_BLE_V1`)
 Implementa una comunicazione continua tra due schede Portenta H7:
 * **Central**: Scansiona l'ambiente filtrando per un UUID specifico, si connette e resta in ascolto continuo dei dati.
 * **Sensor (Peripheral)**: Invia dati (attualmente generati da un sensore fittizio) ogni secondo e riceve contemporaneamente stringhe di testo/comandi inviati dal Central. 
 
-### 4. 🔋 Connessione BLE V2 (Deep Sleep & Dual Core)
+### 4. 🔋 BLE con Deep Sleep & Dual Core (`Progetti/Connessione_BLE_V2`)
 *L'attuale fulcro dello sviluppo.* Questo modulo esplora il risparmio energetico spinto demandando i compiti di rete al core a basso consumo (M4).
 
 * **Gestione M7 (Bootloader)**: Il core principale (M7) viene utilizzato esclusivamente per "svegliare" il core secondario, dopodiché viene messo in ibernazione profonda a tempo indeterminato tramite `rtos::ThisThread::flags_wait_any`.
@@ -87,7 +87,7 @@ Implementa una comunicazione continua tra due schede Portenta H7:
 ---
 
 
-## 🧪 Setup Sperimentale e Caratterizzazione dei Consumi
+## 🧪 Setup Sperimentale
 
 La validazione del sistema e la caratterizzazione dei consumi energetici per la versione **V2 (Deep Sleep)** vengono effettuate in un ambiente di test controllato. 
 
@@ -95,3 +95,4 @@ La validazione del sistema e la caratterizzazione dei consumi energetici per la 
 * **Sorgente Dati**: In questa fase dello sviluppo, i dati trasmessi dal nodo sensore sono **generati via software** (dati fittizi). Questo approccio permette di isolare il consumo dello stack radio e della logica Dual-Core, eliminando le variabili di assorbimento della sensoristica esterna non ancora integrata.
 
 ---
+Questo repository e la relativa documentazione nascono dall'esigenza di sistematizzare l'architettura del lavoro svolto. L'obiettivo è garantire la piena tracciabilità delle scelte progettuali e permettere una rapida replica dell'ambiente di sviluppo e della struttura del firmware in scenari futuri o per ulteriori sviluppi del progetto.
