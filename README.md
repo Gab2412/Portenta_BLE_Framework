@@ -7,7 +7,7 @@
 
 Questo repository contiene un framework strutturato per lo sviluppo, il test e l'implementazione di reti di sensori basate su **Arduino Portenta H7**. 
 
-Il progetto è stato sviluppato nell'ambito di un tirocinio di ricerca presso l'**INGV**, focalizzato, per il momento, sull'acquisizione dati, la comunicazione wireless tramite Bluetooth Low Energy (BLE) e l'ottimizzazione estrema dei consumi energetici (Deep Sleep) sfruttando l'architettura asimmetrica Dual-Core (Cortex-M7 + Cortex-M4) della scheda.
+Il progetto è stato sviluppato nell'ambito di un tirocinio presso l'**INGV**, focalizzato, per il momento, sull'acquisizione dati, la comunicazione wireless tramite Bluetooth Low Energy (BLE) e l'ottimizzazione estrema dei consumi energetici (Deep Sleep) sfruttando l'architettura asimmetrica Dual-Core (Cortex-M7 + Cortex-M4) della scheda.
 
 ---
 
@@ -84,6 +84,9 @@ Implementa una comunicazione continua tra due schede Portenta H7:
 * **Gestione M7 (Bootloader)**: Il core principale (M7) viene utilizzato esclusivamente per "svegliare" il core secondario, dopodiché viene messo in ibernazione profonda a tempo indeterminato tramite `rtos::ThisThread::flags_wait_any`.
 * **Gestione M4 (Operativo)**: Il core M4 gestisce l'intero stack radio BLE in autonomia. L'invio dei dati è ottimizzato: avviene periodicamente o asincronamente se il Central invia un comando di lettura anticipata. Nei tempi morti, il thread sfrutta i cicli di idle di Mbed OS per abbattere ulteriormente gli assorbimenti.
 
+> **Strategia di Offloading & Power Management**: 
+> A differenza di un approccio standard, questa architettura non si limita all'invocazione di stati di sleep software, ma sfrutta l'asimmetria hardware della Portenta H7. Isolando lo stack radio e la logica di campionamento sul core **Cortex-M4** (intrinsecamente più efficiente), è possibile forzare il core **Cortex-M7** in uno stato di stop totale. Questo "offloading" permette alla scheda di operare in una modalità molto vicina al **Deep Sleep** hardware, massimizzando l'autonomia energetica senza perdere la reattività nella comunicazione BLE.
+
 ---
 
 
@@ -93,6 +96,28 @@ La validazione del sistema e la caratterizzazione dei consumi energetici per la 
 
 * **Metodologia di Misura**: La Portenta H7 viene alimentata tramite un **alimentatore stabilizzato da banco**. La corrente assorbita viene misurata in tempo reale utilizzando un **multimetro digitale** posto in serie alla linea di alimentazione, permettendo di monitorare i picchi durante la trasmissione BLE e i minimi durante le fasi di ibernazione dei core.
 * **Sorgente Dati**: In questa fase dello sviluppo, i dati trasmessi dal nodo sensore sono **generati via software** (dati fittizi). Questo approccio permette di isolare il consumo dello stack radio e della logica Dual-Core, eliminando le variabili di assorbimento della sensoristica esterna non ancora integrata.
+
+---
+
+## 📝 Roadmap (TODO)
+
+Questa sezione tiene traccia delle funzionalità in fase di sviluppo e delle ottimizzazioni pianificate per il framework.
+
+- [x] **Setup Monorepo**: Configurazione `common_config.ini` e struttura multi-progetto.
+    - [x] Sincronizzazione e condivisione tramite GitHub. 
+- [x] **Connettività Base (V1)**: Comunicazione bidirezionale stabile tra Central e Sensor.
+- [ ] **Ottimizzazione Deep Sleep (V2)**: 
+    - [x] Implementazione Bootloader su Core M7.
+    - [ ] Handover completo dello stack BLE al Core M4.
+    - [ ] Caratterizzazione dei consumi in modalità *Sleep* vs *Deep Sleep*.
+- [ ] **Integrazione Hardware**: 
+    - [ ] Sostituzione dei dati fittizi con letture da sensori reali.
+    - [ ] Gestione degli interrupt esterni per il wake-up della scheda.
+- [ ] **Automazione**: 
+    - [ ] Creazione di *Task* VS Code per il flash simultaneo di M7 e M4.
+    - [ ] Computazione dei dati onboard sulla scheda Central
+    - [ ] Script per il logging dei dati ricevuti dalla Central su PC via Serial-to-CSV.
+    
 
 ---
 Questo repository e la relativa documentazione nascono dall'esigenza di sistematizzare l'architettura del lavoro svolto. L'obiettivo è garantire la piena tracciabilità delle scelte progettuali e permettere una rapida replica dell'ambiente di sviluppo e della struttura del firmware in scenari futuri o per ulteriori sviluppi del progetto.
