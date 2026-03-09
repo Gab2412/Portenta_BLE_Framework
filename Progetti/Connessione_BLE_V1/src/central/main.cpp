@@ -15,7 +15,7 @@ void setup() {
   }
 
   Serial.println("Scheda Centrale avviata. Cerco il servizio specifico...");
-  // FONDAMENTALE: Cerca SOLO dispositivi che offrono il tuo UUID
+  // FONDAMENTALE: Cerca SOLO dispositivi che offrono l'UUID specificato
   BLE.scan(); 
 }
 

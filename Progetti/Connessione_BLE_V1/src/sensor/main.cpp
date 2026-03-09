@@ -12,7 +12,7 @@ void onBleConnected(BLEDevice central) {
 void onBleDisconnected(BLEDevice central) {
   Serial.print("Central disconnesso: ");
   Serial.println(central.address());
-  BLE.advertise(); // Giustissimo rimetterlo in advertising qui!
+  BLE.advertise(); //Fare advertise nel loop può creare problemi
   Serial.println("Advertising BLE riavviato.");
 }
 
@@ -62,7 +62,7 @@ void loop() {
         Serial.println(comandoRicevuto);
       }
 
-      // --- INVIO TEMPERATURA (Ogni 1 secondo) ---
+      // --- INVIO TEMPERATURA FITTIZIA (Ogni 1 secondo) ---
       if (millis() - lastSend > 1000) {
         float fintaTemperatura = 25.5 + (millis() % 1000) / 100.0; 
         temperatureChar.writeValue(fintaTemperatura);
@@ -72,5 +72,4 @@ void loop() {
       }
     }
   }
-  // ELIMINATO: Il blocco else con l'advertise continuo che faceva crashare tutto.
 }

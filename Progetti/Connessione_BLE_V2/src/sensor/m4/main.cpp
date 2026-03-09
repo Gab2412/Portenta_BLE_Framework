@@ -1,7 +1,6 @@
 #include <ArduinoBLE.h>
 #include "rtos.h"
 
-// Definiamo lo stesso servizio e le stesse caratteristiche
 BLEService myService("19B10000-E8F2-537E-4F6C-D104768A1214");
 BLEByteCharacteristic commandChar("19B10001-E8F2-537E-4F6C-D104768A1214", BLEWrite);
 BLEFloatCharacteristic dataChar("19B10002-E8F2-537E-4F6C-D104768A1214", BLERead | BLENotify);
