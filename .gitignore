@@ -1,0 +1,27 @@
+# --- PLATFORMIO SPECIFIC ---
+.pio/                # Esclude tutta la cartella dei file compilati e librerie scaricate
+.pioenvs/            # Vecchi residui di versioni precedenti
+.piopkgs/            # Pacchetti scaricati
+.pcode/              # Cache di VS Code
+
+# --- VS CODE SPECIFIC ---
+.vscode/.browse.vc.db
+.vscode/.cmake.api/
+.vscode/.msvc.db
+.vscode/ipch/
+.vscode/launch.json   # Spesso contiene percorsi locali, meglio non sincronizzarlo
+.vscode/tasks.json
+
+# --- COMPILATION OUTPUTS ---
+*.bin
+*.elf
+*.hex
+*.map
+
+# --- OS SPECIFIC ---
+.DS_Store             # Per chi usa Mac
+Thumbs.db             # Per chi usa Windows
+
+# --- PRIVATE CONFIGS ---
+# Se in futuro vorrai file di configurazione con password WiFi o porte seriali fisse
+private_config.ini

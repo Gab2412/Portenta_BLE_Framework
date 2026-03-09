@@ -1,0 +1,27 @@
+{
+  "folders": [
+    {
+      "name": "⚙️ Root",
+      "path": "."
+    },
+    {
+      "name": "💡 Blink",
+      "path": "Progetti/Blink"
+    },
+    {
+      "name": "📡 Test BLE preliminare",
+      "path": "Progetti/Test_BLE_preliminare"
+    },
+    {
+      "name": "🛜 Test BLE",
+      "path": "Progetti/Connessione_BLE_V1"
+    },
+    {
+      "name": "🔋 Test BLE Deep Sleep",
+      "path": "Progetti/Connessione_BLE_V2"
+    }
+  ],
+  "settings": {
+    "platformio-ide.activateProjectOnEntry": true
+  }
+}
