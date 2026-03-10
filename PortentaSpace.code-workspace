@@ -15,6 +15,9 @@
     {
       "name": "🛜 Test BLE",
       "path": "Progetti/Connessione_BLE_V1"
+    },{
+      "name": "2️⃣ Test Dual Core",
+      "path": "Progetti/Test_dual_core"
     },
     {
       "name": "🔋 Test BLE Deep Sleep",

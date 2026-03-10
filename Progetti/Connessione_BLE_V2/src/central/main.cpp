@@ -5,7 +5,7 @@ const char* cmdUUID     = "19B10001-E8F2-537E-4F6C-D104768A1214";
 const char* dataUUID    = "19B10002-E8F2-537E-4F6C-D104768A1214";
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   if (!BLE.begin()) { while (1); }
   Serial.println("Central in scansione...");
   BLE.scanForUuid(serviceUUID);

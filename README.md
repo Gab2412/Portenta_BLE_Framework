@@ -78,7 +78,12 @@ Implementa una comunicazione continua tra due schede Portenta H7:
 * **Central**: Scansiona l'ambiente filtrando per un UUID specifico, si connette e resta in ascolto continuo dei dati.
 * **Sensor (Peripheral)**: Invia dati (attualmente generati da un sensore fittizio) ogni secondo e riceve contemporaneamente stringhe di testo/comandi inviati dal Central. 
 
-### 4. 🔋 BLE con Deep Sleep & Dual Core (`Progetti/Connessione_BLE_V2`)
+### 4. 2️⃣ Test Dual Core (`Progetti/Test_dual_core`)
+Prima implementazione del Dual core. Serve per capire se il core M4 si attiva correttamente. Il `bootloader.cpp` attiva il core M4 per poi spegnere indefinitivamente il core M7.
+
+Bisogna prima caricare il codice per M4 e poi quello per M7.
+
+### 5. 🔋 BLE con Deep Sleep & Dual Core (`Progetti/Connessione_BLE_V2`)
 *L'attuale fulcro dello sviluppo.* Questo modulo esplora il risparmio energetico spinto demandando i compiti di rete al core a basso consumo (M4).
 
 * **Gestione M7 (Bootloader)**: Il core principale (M7) viene utilizzato esclusivamente per "svegliare" il core secondario, dopodiché viene messo in ibernazione profonda a tempo indeterminato tramite `rtos::ThisThread::flags_wait_any`.
@@ -86,6 +91,10 @@ Implementa una comunicazione continua tra due schede Portenta H7:
 
 > **Strategia di Offloading & Power Management**: 
 > A differenza di un approccio standard, questa architettura non si limita all'invocazione di stati di sleep software, ma sfrutta l'asimmetria hardware della Portenta H7. Isolando lo stack radio e la logica di campionamento sul core **Cortex-M4** (intrinsecamente più efficiente), è possibile forzare il core **Cortex-M7** in uno stato di stop totale. Questo "offloading" permette alla scheda di operare in una modalità molto vicina al **Deep Sleep** hardware, massimizzando l'autonomia energetica senza perdere la reattività nella comunicazione BLE.
+
+Al momento sembra che il BLE possa essere gestito solo dal core M7, quindi per ora il core M7 manda i dati mentre il core M4 li genera.
+
+La differenza di consumo nei primi test sembra irrisoria.
 
 ---
 
