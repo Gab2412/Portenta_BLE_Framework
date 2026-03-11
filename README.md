@@ -127,7 +127,9 @@ for _ in range(9):
     delta = struct.unpack('<h', data[ptr:ptr+2])[0]
     current_val += delta # Integrazione
 ```
+Avviando lo script Python si aprirà una finestra che mostrerà tutta l'attività:
 
+![Plot test WiFi analog](Immagini/Plot_Test_wifi_analog.png)
 
 ---
 
