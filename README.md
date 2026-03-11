@@ -60,31 +60,51 @@ Nella configurazione avanzata (V2), lo stack BLE viene inizializzato e gestito i
 
 ---
 
+## 𝚫 Delta Encoding
+Per massimizzare l'efficienza del modulo Radio ho implementato un algoritmo di compressione differenziale basata sullo **Steim1**, alla base del formato **miniSEED**
+
+Nella realtà si lavora con sensori a 3 canali che mandano, per ogni canale 32bit di informazione, tutto a 100Hz. 
+Con la compressione delta, il sistema, al posto di mandare 10 campioni da 32bit, ne manda 1 a 32bit `init32_t`e 9 come differenza rispetto al primo come `init16_t`.
+
+Così facendo passiamo da 120byte totali a soli 66byte, risparmiando ~45% della banda.
+
+---
+
+## 🫨 Simulazione Geofisica
+Il simulatore implementato nel progetto `Test_wifi_analog` simula gli eventi sismici con un decadimento esponenziale ogni 10 secondi.
+
+```cpp
+eventSignal *= 0.98; // Smorzamento del picco
+float seismicWave = eventSignal * sin(2.0 * PI * 2.5 * (t / 1000.0));
+```
+
+---
+
 ## 📂 Panoramica dei Progetti
 
 Il framework è diviso in step incrementali di complessità. Ogni cartella all'interno di `Progetti/` contiene un esperimento o una versione specifica:
 
-### 1. 💡 Blink (`Progetti/Blink`)
+### 1. 💡 Blink (`Blink`)
 Il classico script di test hardware "Hello World" per verificare il corretto funzionamento, i driver USB e il caricamento del codice sulla Portenta H7.
 > Il codice è stato preso dalla documentazione ufficiale Arduino seguendo [questo articolo](https://docs.arduino.cc/tutorials/portenta-h7/setting-up-portenta/)
 
-### 2. 📡 Test BLE Preliminare (`Progetti/test_BLE_preliminare`)
+### 2. 📡 Test BLE Preliminare (`test_BLE_preliminare`)
 Progetto base utile testare l'attivazione del modulo radio e l'esposizione di un servizio BLE (controllo LED da smartphone o da un altro central). 
 
 > Il codice è stato preso dalla documentazione ufficiale Arduino seguendo [questo articolo](https://docs.arduino.cc/tutorials/portenta-h7/ble-connectivity/)
 
-### 3. 🛜 Connessione BLE Bidirezionale (`Progetti/Connessione_BLE_V1`)
+### 3. 📶 Connessione BLE Bidirezionale (`Connessione_BLE_V1`)
 Implementa una comunicazione continua tra due schede Portenta H7:
 * **Central**: Scansiona l'ambiente filtrando per un UUID specifico, si connette e resta in ascolto continuo dei dati.
 * **Sensor (Peripheral)**: Invia dati (attualmente generati da un sensore fittizio) ogni secondo e riceve contemporaneamente stringhe di testo/comandi inviati dal Central. 
 
-### 4. 2️⃣ Test Dual Core (`Progetti/Test_dual_core`)
+### 4. 2️⃣ Test Dual Core (`Test_dual_core`)
 Prima implementazione del Dual core. Serve per capire se il core M4 si attiva correttamente. Il `bootloader.cpp` attiva il core M4 per poi spegnere indefinitivamente il core M7.
 
 Bisogna prima caricare il codice per M4 e poi quello per M7.
 
-### 5. 🔋 BLE con Deep Sleep & Dual Core (`Progetti/Connessione_BLE_V2`)
-*L'attuale fulcro dello sviluppo.* Questo modulo esplora il risparmio energetico spinto demandando i compiti di rete al core a basso consumo (M4).
+### 5. 🔋 BLE con Deep Sleep & Dual Core (`Connessione_BLE_V2`)
+Questo modulo esplora il risparmio energetico spinto demandando i compiti di rete al core a basso consumo (M4).
 
 * **Gestione M7 (Bootloader)**: Il core principale (M7) viene utilizzato esclusivamente per "svegliare" il core secondario, dopodiché viene messo in ibernazione profonda a tempo indeterminato tramite `rtos::ThisThread::flags_wait_any`.
 * **Gestione M4 (Operativo)**: Il core M4 gestisce l'intero stack radio BLE in autonomia. L'invio dei dati è ottimizzato: avviene periodicamente o asincronamente se il Central invia un comando di lettura anticipata. Nei tempi morti, il thread sfrutta i cicli di idle di Mbed OS per abbattere ulteriormente gli assorbimenti.
@@ -95,6 +115,19 @@ Bisogna prima caricare il codice per M4 e poi quello per M7.
 Al momento sembra che il BLE possa essere gestito solo dal core M7, quindi per ora il core M7 manda i dati mentre il core M4 li genera.
 
 La differenza di consumo nei primi test sembra irrisoria.
+
+### 6. 🛜 Inoltro dati tramite Wifi `Test_wifi_analog`
+Questo progetto si avvicina alla realtà generando dati simili ai segnali geofisici a **100Hz**, comprimendoli tramite **Delta encoding** e inoltrandoli tramite WiFi UDP ad una stazione di monitoraggio remota.
+
+La ricezione e la visualizzazione dei dati viene gestita da uno script Python che ricostruisce il segnale originale.
+```python
+# Ricostruzione: Valore Attuale = Valore Precedente + Delta
+current_val = struct.unpack('<i', data[ptr:ptr+4])[0] # Base
+for _ in range(9):
+    delta = struct.unpack('<h', data[ptr:ptr+2])[0]
+    current_val += delta # Integrazione
+```
+
 
 ---
 

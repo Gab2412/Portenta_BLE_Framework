@@ -13,15 +13,20 @@
       "path": "Progetti/Test_BLE_preliminare"
     },
     {
-      "name": "🛜 Test BLE",
+      "name": "📶 Test BLE",
       "path": "Progetti/Connessione_BLE_V1"
-    },{
+    },
+    {
       "name": "2️⃣ Test Dual Core",
       "path": "Progetti/Test_dual_core"
     },
     {
       "name": "🔋 Test BLE Deep Sleep",
       "path": "Progetti/Connessione_BLE_V2"
+    },
+    {
+      "name": "🛜 Test Wifi",
+      "path": "Progetti/Test_wifi_analog"
     }
   ],
   "settings": {
