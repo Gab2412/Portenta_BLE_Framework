@@ -80,6 +80,31 @@ float seismicWave = eventSignal * sin(2.0 * PI * 2.5 * (t / 1000.0));
 
 ---
 
+## ⤵️ Conversione MiniSEED -> Header
+I dati reali contenuti nel file `dati_di_prova.mseed` non possono essere letti direttamente dal codice in `.cpp`, per questo devono essere convertiti in file Header `.h`, così da poter essere iniettati direttamente nella memoria Flash della Portenta.
+
+L'utilizzo di file reali è necessario come ulteriore stress test per capire le capacità di trasmissione della scheda.
+
+### Logica di trasformazione
+Il passaggio dai dati binari al codice sorgente avviene tramite uno script Python basato sulla libreria ObsPy. Il processo segue tre fasi critiche:
+1. **Sincronizzazione**: Estrazione di 3 tracce (Z, N, E) e livellamento alla stessa lunghezza campioni.
+2. **Conversione**: Trasformazione dei dati grezzi in interi a 32 bit (`int32_t`).
+3. **Embedding**: Generazione di un array bidimensionale static const per forzare la memorizzazione nella Flash, evitando di saturare la RAM.
+
+Il file generato espone i dati in una **matrice organizzata per canali**, rendendo l'accesso tramite puntatori immediato.
+
+```cpp
+// Esempio di struttura nel file .h
+static const int SEISMIC_DATA_LEN = 10000;
+static const int32_t SEISMIC_SAMPLES[3][10000] = {
+  { ... dati Canale Z ... },
+  { ... dati Canale N ... },
+  { ... dati Canale E ... }
+};
+```
+
+---
+
 ## 📂 Panoramica dei Progetti
 
 Il framework è diviso in step incrementali di complessità. Ogni cartella all'interno di `Progetti/` contiene un esperimento o una versione specifica:
@@ -131,6 +156,20 @@ Avviando lo script Python si aprirà una finestra che mostrerà tutta l'attivit�
 
 ![Plot test WiFi analog](Immagini/Plot_Test_wifi_analog.png)
 
+### 💾 Inoltro di dati veri `Test_wifi_real_data`
+Questa è la diretta evoluzione del progetto precedente, ma al posto di simulare un evento sismico, **andiamo ad utilizzare un file `.mseed` di prova**, debitamente convertito a file `.h` per essere letto dal nostro `main.cpp`. Questi dati verranno trattati come dati **live**.
+
+I dati vengono letti utilizzando lo script `Ricevitore_WiFi_Plot_v2.py`, che permette di visualizzare il grafico con un andamento **in tempo reale sui 3 canali**.
+
+![Plot test WiFi real](Immagini/Plot_Test_wifi_real.png)
+
+###  🔢 Dati provenienti da più sensori `Test_rete_multi`
+In questo progetto ci avviciniamo alla realizzazione finale andando a prendere **dati da più sensori**. Lo script `Ricevitore_WiFi_Plot_multi.py` permette di visualizzare i 3 canali sui due sensori. Possiamo cambiare il sensore visualizzato utilizzando i tasti numerici.
+
+Ipotizzo che l'hardware è in grado di gestire fino a 5 connessioni simultanee.
+
+![Plot test WiFi multi](Immagini/Plot_Test_wifi_multi.png)
+
 ---
 
 
@@ -150,17 +189,20 @@ Questa sezione tiene traccia delle funzionalità in fase di sviluppo e delle ott
 - [x] **Setup Monorepo**: Configurazione `common_config.ini` e struttura multi-progetto.
     - [x] Sincronizzazione e condivisione tramite GitHub. 
 - [x] **Connettività Base (V1)**: Comunicazione bidirezionale stabile tra Central e Sensor.
-- [ ] **Ottimizzazione Deep Sleep (V2)**: 
+- [x] **Ottimizzazione Deep Sleep (V2)**: 
     - [x] Implementazione Bootloader su Core M7.
-    - [ ] Handover completo dello stack BLE al Core M4.
-    - [ ] Caratterizzazione dei consumi in modalità *Sleep* vs *Deep Sleep*.
+    - [ ] ~~Handover completo dello stack BLE al Core M4.~~
+    - [ ] ~~Caratterizzazione dei consumi in modalità *Sleep* vs *Deep Sleep*.~~
 - [ ] **Integrazione Hardware**: 
-    - [ ] Sostituzione dei dati fittizi con letture da sensori reali.
-    - [ ] Gestione degli interrupt esterni per il wake-up della scheda.
-- [ ] **Automazione**: 
-    - [ ] Creazione di *Task* VS Code per il flash simultaneo di M7 e M4.
-    - [ ] Computazione dei dati onboard sulla scheda Central
-    - [ ] Script per il logging dei dati ricevuti dalla Central su PC via Serial-to-CSV.
+    - [x] Sostituzione dei dati fittizi con letture da sensori reali.
+    - [ ] Sostituzione dei dati fittizi con letture live da sensori reali.
+    - [ ] ~~Gestione degli interrupt esterni per il wake-up della scheda.~~
+- [ ] **Implementazione rete con più sensori**
+    - [X] Leggere i dati provenienti da più sensori
+    - [ ] Testare le capacità massime di trasmissione e ricezione
+- [ ] **Multithreading**: 
+    - [ ] Implementare esempi base di Multithreading e Mutex
+    - [ ] Implementare il codice esistente sulla lettura dei sensori reali
     
 
 ---

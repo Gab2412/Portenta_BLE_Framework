@@ -27,6 +27,14 @@
     {
       "name": "🛜 Test Wifi",
       "path": "Progetti/Test_wifi_analog"
+    },
+    {
+      "name": "💾 Test con dati veri",
+      "path": "Progetti/Test_wifi_real_data"
+    },
+    {
+      "name": "🔢 Test con più sensori",
+      "path": "Progetti/Test_rete_multi"
     }
   ],
   "settings": {
