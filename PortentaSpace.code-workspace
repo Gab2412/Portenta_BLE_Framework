@@ -35,6 +35,14 @@
     {
       "name": "🔢 Test con più sensori",
       "path": "Progetti/Test_rete_multi"
+    },
+    {
+      "name": "🚦 Test MultiThreading",
+      "path": "Progetti/Test_multithreading"
+    },
+    {
+      "name": "📈 Test MultiThreading con dati veri",
+      "path": "Progetti/Test_multithreading_real_data"
     }
   ],
   "settings": {

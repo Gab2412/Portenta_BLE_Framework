@@ -1,6 +1,7 @@
 # 📡 Portenta H7 Multi-Node BLE Framework
 
 ![C++](https://img.shields.io/badge/Language-C++-blue.svg)
+![Puthon](https://img.shields.io/badge/Language-Python-yellow.svg)
 ![PlatformIO](https://img.shields.io/badge/Piattaforma-PlatformIO-orange.svg)
 ![Hardware](https://img.shields.io/badge/Hardware-Arduino_Portenta_H7-00979D.svg)
 ![Stato](https://img.shields.io/badge/Stato-In_Sviluppo-success.svg)
@@ -156,22 +157,38 @@ Avviando lo script Python si aprirà una finestra che mostrerà tutta l'attivit�
 
 ![Plot test WiFi analog](Immagini/Plot_Test_wifi_analog.png)
 
-### 💾 Inoltro di dati veri `Test_wifi_real_data`
+### 7. 💾 Inoltro di dati veri `Test_wifi_real_data`
 Questa è la diretta evoluzione del progetto precedente, ma al posto di simulare un evento sismico, **andiamo ad utilizzare un file `.mseed` di prova**, debitamente convertito a file `.h` per essere letto dal nostro `main.cpp`. Questi dati verranno trattati come dati **live**.
 
 I dati vengono letti utilizzando lo script `Ricevitore_WiFi_Plot_v2.py`, che permette di visualizzare il grafico con un andamento **in tempo reale sui 3 canali**.
 
 ![Plot test WiFi real](Immagini/Plot_Test_wifi_real.png)
 
-###  🔢 Dati provenienti da più sensori `Test_rete_multi`
+### 8. 🔢 Dati provenienti da più sensori `Test_rete_multi`
 In questo progetto ci avviciniamo alla realizzazione finale andando a prendere **dati da più sensori**. Lo script `Ricevitore_WiFi_Plot_multi.py` permette di visualizzare i 3 canali sui due sensori. Possiamo cambiare il sensore visualizzato utilizzando i tasti numerici.
 
 Ipotizzo che l'hardware è in grado di gestire fino a 5 connessioni simultanee.
 
 ![Plot test WiFi multi](Immagini/Plot_Test_wifi_multi.png)
 
----
+### 9. 🚦 Test di Multithreading `Test_multithreading`
+Questo progetto serve per sperimentare con il MultiThreading di MbedOS. 
 
+All'interno troviamo due sottoprogetti studiati per testare progressivamente ambienti più complessi.
+
+In `src/base` troviamo un semplicissimo progetto di multithread, senza scrittura di dati, ma solo con un blink e alcuni output seriali indipendenti tra loro.
+
+in `src/mutex`, banalmente, si sperimenta con il mutex.
+
+Al momento, data la ristrettezza dei progetti, posso permettermi di inserire tutti i file necessari all'interno della cartella `src` del progetto. 
+
+In un secondo momento, con progetti più grossi, sarà consigliato inserire questi file all'interno di una cartella dedicata, come la cartella `lib`
+
+### 10. 📈 Test Multithreading con dati veri `Test_multithreading_real_data`
+
+Questo progetto, come diretta evoluzione dei precedenti, delega la gestione del BLE e la racolta dei dati a due thread indipendenti. 
+
+---
 
 ## 🧪 Setup Sperimentale
 
@@ -201,7 +218,8 @@ Questa sezione tiene traccia delle funzionalità in fase di sviluppo e delle ott
     - [X] Leggere i dati provenienti da più sensori
     - [ ] Testare le capacità massime di trasmissione e ricezione
 - [ ] **Multithreading**: 
-    - [ ] Implementare esempi base di Multithreading e Mutex
+    - [x] Implementare esempi base di Multithreading e Mutex
+    - [x] Implementare il Multithreading con lettura dei miniSEED salvati
     - [ ] Implementare il codice esistente sulla lettura dei sensori reali
     
 
