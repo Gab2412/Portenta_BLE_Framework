@@ -43,6 +43,14 @@
     {
       "name": "📈 Test MultiThreading con dati veri",
       "path": "Progetti/Test_multithreading_real_data"
+    },
+    {
+      "name": "🔝 Max MTU",
+      "path": "Progetti/Max_MTU"
+    },
+    {
+      "name": "📲 Test Throughput con MTU a 242",
+      "path": "Progetti/MTU242_Throughput"
     }
   ],
   "settings": {
